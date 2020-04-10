@@ -259,7 +259,8 @@ class HoloViewsConverter(object):
         'points'   : ['s', 'marker', 'c', 'scale', 'logz'],
         'polygons' : ['logz', 'c'],
         'labels'   : ['text', 'c', 's'],
-        'kde'      : ['bw_method', 'ind'],
+        'kde'      : ['bw_method', 'ind', 'bandwidth', 'cut', 'filled'],
+        'bivariate': ['bandwidth', 'cut', 'filled', 'levels']
     }
 
     _kind_mapping = {
@@ -299,16 +300,17 @@ class HoloViewsConverter(object):
                  xlim=None, ylim=None, clim=None, symmetric=None,
                  logx=None, logy=None, loglog=None, hover=None,
                  subplots=False, label=None, invert=False,
-                 stacked=False, colorbar=None,
-                 datashade=False, rasterize=False,
-                 row=None, col=None, figsize=None, debug=False,
-                 framewise=True, aggregator=None,
-                 projection=None, global_extent=None, geo=False,
-                 precompute=False, flip_xaxis=None, flip_yaxis=None,
-                 dynspread=False, hover_cols=[], x_sampling=None,
-                 y_sampling=None, project=False, tools=[],
-                 attr_labels=None, coastline=False, tiles=False,
-                 sort_date=True, check_symmetric_max=1000000, **kwds):
+                 stacked=False, colorbar=None, xcats=None, ycats=None,
+                 datashade=False, rasterize=False, row=None, col=None,
+                 figsize=None, debug=False, framewise=True,
+                 aggregator=None, projection=None, global_extent=None,
+                 geo=False, precompute=False, flip_xaxis=None,
+                 flip_yaxis=None, dynspread=False, hover_cols=[],
+                 x_sampling=None, y_sampling=None, project=False,
+                 tools=[], attr_labels=None, coastline=False,
+                 tiles=False, sort_date=True, check_symmetric_max=1000000,
+                 **kwds):
+
         # Process data and related options
         self._redim = fields
         self.use_index = use_index
@@ -370,6 +372,8 @@ class HoloViewsConverter(object):
 
         # Process options
         self.stacked = stacked
+        self.xcats = xcats
+        self.ycats = ycats
 
         plot_opts = dict(self._default_plot_opts,
                          **self._process_plot())
@@ -918,18 +922,29 @@ class HoloViewsConverter(object):
                 dataset = Dataset(data, kdims=shape_dims+columns).redim(**self._redim)
             else:
                 dataset = Dataset(data).redim(**self._redim)
+                
             if groups:
-                dataset = dataset.groupby(groups, dynamic=self.dynamic)
+                datasets = dataset.groupby(groups, dynamic=self.dynamic)
                 if len(zs) > 1:
-                    dimensions = [Dimension(self.group_label, values=zs)]+dataset.kdims
+                    dimensions = [Dimension(self.group_label, values=zs)]+datasets.kdims
                     if self.dynamic:
-                        obj = DynamicMap(lambda *args: method(x, y, args[0], dataset[args[1:]].data),
-                                         kdims=dimensions)
+                        def method_wrapper(ds, x, y, z):
+                            el = method(x, y, z, ds.data)
+                            el._transforms = dataset._transforms
+                            el._dataset = ds
+                            return el
+                        obj = datasets.apply(method, x, y, per_element=True, link_inputs=False)
                     else:
                         obj = HoloMap({(z,)+k: method(x, y, z, dataset[k])
-                                       for k, v in dataset.data.items() for z in zs}, kdims=dimensions)
+                                       for k, v in datasets.data.items() for z in zs}, kdims=dimensions)
                 else:
-                    obj = dataset.map(lambda ds: method(x, y, data=ds.data), Dataset)
+                    def method_wrapper(ds, x, y):
+                        el = method(x, y, data=ds.data)
+                        el._transforms = dataset._transforms
+                        el._dataset = ds
+                        return el
+                    obj = datasets.apply(method_wrapper, x=x, y=y, per_element=True,
+                                         link_inputs=False)
             elif len(zs) > 1:
                 dimensions = [Dimension(self.group_label, values=zs)]
                 if self.dynamic:
@@ -1269,9 +1284,9 @@ class HoloViewsConverter(object):
         if 'ylabel' in self._plot_opts and 'y' not in labelled:
             labelled.append('y')
 
-        opts = {'plot': dict(self._plot_opts, labelled=labelled),
-                'style': dict(self._style_opts),
-                'norm': self._norm_opts}
+        opts = dict(self._plot_opts, labelled=labelled)
+        opts.update(self._style_opts)
+        opts.update(self._norm_opts)
 
         id_vars = [x]
         if any(v in self.indexes for v in id_vars):
@@ -1290,8 +1305,7 @@ class HoloViewsConverter(object):
             obj = Dataset(df, kdims, vdims).to(element, x).layout()
         else:
             obj = element(df, kdims, vdims)
-        return (obj.redim(**self._redim)
-                .relabel(**self._relabel).opts(**opts))
+        return (obj.redim(**self._redim).relabel(**self._relabel).opts(**opts))
 
     def bar(self, x=None, y=None, data=None):
         data, x, y = self._process_chart_args(data, x, y)
@@ -1301,7 +1315,7 @@ class HoloViewsConverter(object):
         return self._category_plot(Bars, x, list(y), data)
 
     def barh(self, x=None, y=None, data=None):
-        return self.bar(x, y, data).opts(plot={'Bars': dict(invert_axes=True)})
+        return self.bar(x, y, data).opts('Bars', invert_axes=True)
 
     ##########################
     #   Statistical charts   #
@@ -1313,8 +1327,7 @@ class HoloViewsConverter(object):
         """
         data, x, y = self._process_chart_args(data, False, y)
 
-        opts = {'plot': dict(self._plot_opts), 'norm': self._norm_opts,
-                'style': self._style_opts}
+        opts = dict(self._plot_opts, **dict(self._style_opts, **self._norm_opts))
 
         ylim = self._plot_opts.get('ylim', (None, None))
         if not isinstance(y, (list, tuple)):
@@ -1417,14 +1430,15 @@ class HoloViewsConverter(object):
         return (self._by_type(hists, sort=False).redim(**self._redim).opts(opts))
 
     def kde(self, x=None, y=None, data=None):
-        bw_method = self.kwds.get('bw_method', None)
-        ind = self.kwds.get('ind', None)
+        bw_method = self.kwds.pop('bw_method', None)
+        ind = self.kwds.pop('ind', None)
         if bw_method is not None or ind is not None:
             raise ValueError('hvplot does not support bw_method and ind')
 
+        dist_opts = dict(self.kwds)
         data, x, y = self._process_chart_args(data, x, y)
         opts = dict(plot=self._plot_opts, style=self._style_opts, norm=self._norm_opts)
-        opts = {'Distribution': opts, 'Area': opts,
+        opts = {'Distribution': dict(opts, **dist_opts), 'Area': opts,
                 'NdOverlay': {'plot': dict(self._overlay_opts, legend_limit=0)}}
 
         xlim = self._plot_opts.get('xlim', (None, None))
@@ -1505,7 +1519,9 @@ class HoloViewsConverter(object):
         self.use_index = False
         data, x, y = self._process_chart_args(data, x, y, single_y=True)
 
-        opts = dict(plot=self._plot_opts, norm=self._norm_opts, style=self._style_opts)
+        opts = dict(self._plot_opts, **self.kwds)
+        opts.update(self._style_opts)
+        opts.update(self._norm_opts)
         return (Bivariate(data, [x, y]).redim(**self._redim).opts(**opts))
 
     def table(self, x=None, y=None, data=None):
