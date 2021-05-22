@@ -1,0 +1,432 @@
+
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Reference Gallery — hvPlot 0.7.2 documentation</title>
+<link href="../_static/css/theme.css" rel="stylesheet"/>
+<link href="../_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet"/>
+<link href="../_static/vendor/fontawesome/5.13.0/css/all.min.css" rel="stylesheet"/>
+<link as="font" crossorigin="" href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2" rel="preload" type="font/woff2"/>
+<link as="font" crossorigin="" href="../_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2" rel="preload" type="font/woff2"/>
+<link href="../_static/pygments.css" rel="stylesheet" type="text/css">
+<link href="../_static/basic.css" rel="stylesheet" type="text/css">
+<link href="../_static/togglebutton.css" rel="stylesheet" type="text/css">
+<link href="../_static/mystnb.css" rel="stylesheet" type="text/css"/>
+<link href="../_static/graphviz.css" rel="stylesheet" type="text/css"/>
+<link href="../_static/nbsite.css" rel="stylesheet" type="text/css"/>
+<link href="../_static/custom.css" rel="stylesheet" type="text/css"/>
+<link as="script" href="../_static/js/index.1c5a1a01449ed65a7b51.js" rel="preload"/>
+<script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+<script src="../_static/jquery.js"></script>
+<script src="../_static/underscore.js"></script>
+<script src="../_static/doctools.js"></script>
+<script src="../_static/togglebutton.js"></script>
+<script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+<link href="../_static/favicon.ico" rel="shortcut icon">
+<link href="../about.html" rel="author" title="About these documents"/>
+<link href="../genindex.html" rel="index" title="Index"/>
+<link href="../search.html" rel="search" title="Search"/>
+<link href="pandas/area.html" rel="next" title="Area"/>
+<link href="../user_guide/Pandas_API.html" rel="prev" title="Pandas API"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="en" name="docsearch:language"/>
+</link></link></link></link></head>
+<body data-offset="80" data-spy="scroll" data-target="#bd-toc-nav">
+<div class="container-fluid" id="banner"></div>
+<nav class="navbar navbar-dark navbar-expand-lg bg-dark fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+<div id="navbar-start">
+<a class="navbar-brand" href="../index.html">
+<img alt="logo" class="logo" src="../_static/logo_horizontal.svg"/>
+</a>
+</div>
+<button aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-target="#navbar-collapsible" data-toggle="collapse" type="button">
+<span class="navbar-toggler-icon"></span>
+</button>
+<div class="col-lg-9 collapse navbar-collapse" id="navbar-collapsible">
+<div class="mr-auto" id="navbar-center">
+<div class="navbar-center-item">
+<ul class="navbar-nav" id="navbar-main-elements">
+<li class="toctree-l1 nav-item">
+<a class="reference internal nav-link" href="../index.html">
+  Introduction
+ </a>
+</li>
+<li class="toctree-l1 nav-item">
+<a class="reference internal nav-link" href="../user_guide/index.html">
+  User Guide
+ </a>
+</li>
+<li class="toctree-l1 current active nav-item">
+<a class="current reference internal nav-link" href="#">
+  Reference Gallery
+ </a>
+</li>
+<li class="toctree-l1 nav-item">
+<a class="reference internal nav-link" href="../topics.html">
+  Topics
+ </a>
+</li>
+<li class="toctree-l1 nav-item">
+<a class="reference internal nav-link" href="../developer_guide/index.html">
+  Developer Guide
+ </a>
+</li>
+<li class="toctree-l1 nav-item">
+<a class="reference internal nav-link" href="../releases.html">
+  Releases
+ </a>
+</li>
+<li class="toctree-l1 nav-item">
+<a class="reference internal nav-link" href="../about.html">
+  About
+ </a>
+</li>
+</ul>
+</div>
+</div>
+<div id="navbar-end">
+<div class="navbar-end-item">
+<ul aria-label="Icon Links" class="navbar-nav" id="navbar-icon-links">
+<li class="nav-item">
+<a class="nav-link" href="https://github.com/holoviz/hvplot" rel="noopener" target="_blank" title="GitHub">
+<span><i class="fab fa-github-square"></i></span>
+<label class="sr-only">GitHub</label>
+</a>
+</li>
+<li class="nav-item">
+<a class="nav-link" href="https://twitter.com/HoloViews" rel="noopener" target="_blank" title="Twitter">
+<span><i class="fab fa-twitter-square"></i></span>
+<label class="sr-only">Twitter</label>
+</a>
+</li>
+<li class="nav-item">
+<a class="nav-link" href="https://discourse.holoviz.org/" rel="noopener" target="_blank" title="Discourse">
+<span><i class="fab fa-discourse"></i></span>
+<label class="sr-only">Discourse</label>
+</a>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</nav>
+<div class="container-xl">
+<div class="row">
+<!-- Only show if we have sidebars configured, else just a small margin  -->
+<div class="col-12 col-md-2 bd-sidebar"><form action="../search.html" class="bd-search d-flex align-items-center" method="get">
+<i class="icon fas fa-search"></i>
+<input aria-label="Search the docs ..." autocomplete="off" class="form-control" id="search-input" name="q" placeholder="Search the docs ..." type="search"/>
+</form><nav aria-label="Main navigation" class="bd-links" id="bd-docs-nav">
+<div class="bd-toc-item active">
+<ul class="nav bd-sidenav">
+<li class="toctree-l1">
+<a class="reference internal" href="pandas/area.html">
+   Area
+  </a>
+</li>
+<li class="toctree-l1">
+<a class="reference internal" href="pandas/bar.html">
+   Bar
+  </a>
+</li>
+<li class="toctree-l1">
+<a class="reference internal" href="pandas/barh.html">
+   Barh
+  </a>
+</li>
+<li class="toctree-l1">
+<a class="reference internal" href="pandas/bivariate.html">
+   Bivariate
+  </a>
+</li>
+<li class="toctree-l1">
+<a class="reference internal" href="pandas/box.html">
+   Box
+  </a>
+</li>
+<li class="toctree-l1">
+<a class="reference internal" href="pandas/errorbars.html">
+   Errorbars
+  </a>
+</li>
+<li class="toctree-l1">
+<a class="reference internal" href="pandas/heatmap.html">
+   Heatmap
+  </a>
+</li>
+<li class="toctree-l1">
+<a class="reference internal" href="pandas/hexbin.html">
+   Hexbin
+  </a>
+</li>
+<li class="toctree-l1">
+<a class="reference internal" href="pandas/hist.html">
+   Hist
+  </a>
+</li>
+<li class="toctree-l1">
+<a class="reference internal" href="pandas/kde.html">
+   Kde
+  </a>
+</li>
+<li class="toctree-l1">
+<a class="reference internal" href="pandas/labels.html">
+   Labels
+  </a>
+</li>
+<li class="toctree-l1">
+<a class="reference internal" href="pandas/line.html">
+   Line
+  </a>
+</li>
+<li class="toctree-l1">
+<a class="reference internal" href="pandas/ohlc.html">
+   Ohlc
+  </a>
+</li>
+<li class="toctree-l1">
+<a class="reference internal" href="pandas/scatter.html">
+   Scatter
+  </a>
+</li>
+<li class="toctree-l1">
+<a class="reference internal" href="pandas/step.html">
+   Step
+  </a>
+</li>
+<li class="toctree-l1">
+<a class="reference internal" href="pandas/table.html">
+   Table
+  </a>
+</li>
+<li class="toctree-l1">
+<a class="reference internal" href="pandas/violin.html">
+   Violin
+  </a>
+</li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1">
+<a class="reference internal" href="geopandas/points.html">
+   Points
+  </a>
+</li>
+<li class="toctree-l1">
+<a class="reference internal" href="geopandas/polygons.html">
+   Polygons
+  </a>
+</li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1">
+<a class="reference internal" href="xarray/contour.html">
+   Contour
+  </a>
+</li>
+<li class="toctree-l1">
+<a class="reference internal" href="xarray/contourf.html">
+   Contourf
+  </a>
+</li>
+<li class="toctree-l1">
+<a class="reference internal" href="xarray/image.html">
+   Image
+  </a>
+</li>
+<li class="toctree-l1">
+<a class="reference internal" href="xarray/quadmesh.html">
+   Quadmesh
+  </a>
+</li>
+<li class="toctree-l1">
+<a class="reference internal" href="xarray/rgb.html">
+   Rgb
+  </a>
+</li>
+<li class="toctree-l1">
+<a class="reference internal" href="xarray/vectorfield.html">
+   Vectorfield
+  </a>
+</li>
+</ul>
+</div>
+</nav>
+</div>
+<div class="d-none d-xl-block col-xl-2 bd-toc">
+<div class="toc-item">
+<div class="tocsection onthispage pt-5 pb-3">
+<i class="fas fa-list"></i> On this page
+</div>
+<nav id="bd-toc-nav">
+<ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry">
+<a class="reference internal nav-link" href="#pandas">
+   Pandas
+  </a>
+</li>
+<li class="toc-h2 nav-item toc-entry">
+<a class="reference internal nav-link" href="#geopandas">
+   Geopandas
+  </a>
+</li>
+<li class="toc-h2 nav-item toc-entry">
+<a class="reference internal nav-link" href="#xarray">
+   Xarray
+  </a>
+</li>
+</ul>
+</nav>
+</div>
+<div class="toc-item">
+</div>
+</div>
+<main class="col-12 col-md-10 col-xl-8 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+<div>
+<div class="section" id="reference-gallery">
+<h1>Reference Gallery<a class="headerlink" href="#reference-gallery" title="Permalink to this headline">¶</a></h1>
+<p>Incomplete Reference Gallery containing some small examples of different plot types.</p>
+<div class="section" id="pandas">
+<h2>Pandas<a class="headerlink" href="#pandas" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+</div>
+<div class="sphx-glr-thumbcontainer example" tooltip="Area"><div class="figure align-default" id="id1">
+<img alt="../_images/area.png" src="../_images/area.png">
+<p class="caption"><span class="caption-text"><a class="reference internal" href="pandas/area.html#pandas-gallery-area"><span class="std std-ref">Area</span></a></span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
+</img></div>
+</div><div class="sphx-glr-thumbcontainer example" tooltip="Bar"><div class="figure align-default" id="id2">
+<img alt="../_images/bar.png" src="../_images/bar.png"/>
+<p class="caption"><span class="caption-text"><a class="reference internal" href="pandas/bar.html#pandas-gallery-bar"><span class="std std-ref">Bar</span></a></span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
+</div>
+</div><div class="sphx-glr-thumbcontainer example" tooltip="Barh"><div class="figure align-default" id="id3">
+<img alt="../_images/barh.png" src="../_images/barh.png"/>
+<p class="caption"><span class="caption-text"><a class="reference internal" href="pandas/barh.html#pandas-gallery-barh"><span class="std std-ref">Barh</span></a></span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
+</div>
+</div><div class="sphx-glr-thumbcontainer example" tooltip="Bivariate"><div class="figure align-default" id="id4">
+<img alt="../_images/bivariate.png" src="../_images/bivariate.png"/>
+<p class="caption"><span class="caption-text"><a class="reference internal" href="pandas/bivariate.html#pandas-gallery-bivariate"><span class="std std-ref">Bivariate</span></a></span><a class="headerlink" href="#id4" title="Permalink to this image">¶</a></p>
+</div>
+</div><div class="sphx-glr-thumbcontainer example" tooltip="Box"><div class="figure align-default" id="id5">
+<img alt="../_images/box.png" src="../_images/box.png"/>
+<p class="caption"><span class="caption-text"><a class="reference internal" href="pandas/box.html#pandas-gallery-box"><span class="std std-ref">Box</span></a></span><a class="headerlink" href="#id5" title="Permalink to this image">¶</a></p>
+</div>
+</div><div class="sphx-glr-thumbcontainer example" tooltip="Errorbars"><div class="figure align-default" id="id6">
+<img alt="../_images/errorbars.png" src="../_images/errorbars.png"/>
+<p class="caption"><span class="caption-text"><a class="reference internal" href="pandas/errorbars.html#pandas-gallery-errorbars"><span class="std std-ref">Errorbars</span></a></span><a class="headerlink" href="#id6" title="Permalink to this image">¶</a></p>
+</div>
+</div><div class="sphx-glr-thumbcontainer example" tooltip="Heatmap"><div class="figure align-default" id="id7">
+<img alt="../_images/heatmap.png" src="../_images/heatmap.png"/>
+<p class="caption"><span class="caption-text"><a class="reference internal" href="pandas/heatmap.html#pandas-gallery-heatmap"><span class="std std-ref">Heatmap</span></a></span><a class="headerlink" href="#id7" title="Permalink to this image">¶</a></p>
+</div>
+</div><div class="sphx-glr-thumbcontainer example" tooltip="Hexbin"><div class="figure align-default" id="id8">
+<img alt="../_images/hexbin.png" src="../_images/hexbin.png"/>
+<p class="caption"><span class="caption-text"><a class="reference internal" href="pandas/hexbin.html#pandas-gallery-hexbin"><span class="std std-ref">Hexbin</span></a></span><a class="headerlink" href="#id8" title="Permalink to this image">¶</a></p>
+</div>
+</div><div class="sphx-glr-thumbcontainer example" tooltip="Hist"><div class="figure align-default" id="id9">
+<img alt="../_images/hist.png" src="../_images/hist.png"/>
+<p class="caption"><span class="caption-text"><a class="reference internal" href="pandas/hist.html#pandas-gallery-hist"><span class="std std-ref">Hist</span></a></span><a class="headerlink" href="#id9" title="Permalink to this image">¶</a></p>
+</div>
+</div><div class="sphx-glr-thumbcontainer example" tooltip="Kde"><div class="figure align-default" id="id10">
+<img alt="../_images/kde.png" src="../_images/kde.png"/>
+<p class="caption"><span class="caption-text"><a class="reference internal" href="pandas/kde.html#pandas-gallery-kde"><span class="std std-ref">Kde</span></a></span><a class="headerlink" href="#id10" title="Permalink to this image">¶</a></p>
+</div>
+</div><div class="sphx-glr-thumbcontainer example" tooltip="Labels"><div class="figure align-default" id="id11">
+<img alt="../_images/labels.png" src="../_images/labels.png"/>
+<p class="caption"><span class="caption-text"><a class="reference internal" href="pandas/labels.html#pandas-gallery-labels"><span class="std std-ref">Labels</span></a></span><a class="headerlink" href="#id11" title="Permalink to this image">¶</a></p>
+</div>
+</div><div class="sphx-glr-thumbcontainer example" tooltip="Line"><div class="figure align-default" id="id12">
+<img alt="../_images/line.png" src="../_images/line.png"/>
+<p class="caption"><span class="caption-text"><a class="reference internal" href="pandas/line.html#pandas-gallery-line"><span class="std std-ref">Line</span></a></span><a class="headerlink" href="#id12" title="Permalink to this image">¶</a></p>
+</div>
+</div><div class="sphx-glr-thumbcontainer example" tooltip="Ohlc"><div class="figure align-default" id="id13">
+<img alt="../_images/ohlc.png" src="../_images/ohlc.png"/>
+<p class="caption"><span class="caption-text"><a class="reference internal" href="pandas/ohlc.html#pandas-gallery-ohlc"><span class="std std-ref">Ohlc</span></a></span><a class="headerlink" href="#id13" title="Permalink to this image">¶</a></p>
+</div>
+</div><div class="sphx-glr-thumbcontainer example" tooltip="Scatter"><div class="figure align-default" id="id14">
+<img alt="../_images/scatter.png" src="../_images/scatter.png"/>
+<p class="caption"><span class="caption-text"><a class="reference internal" href="pandas/scatter.html#pandas-gallery-scatter"><span class="std std-ref">Scatter</span></a></span><a class="headerlink" href="#id14" title="Permalink to this image">¶</a></p>
+</div>
+</div><div class="sphx-glr-thumbcontainer example" tooltip="Step"><div class="figure align-default" id="id15">
+<img alt="../_images/step.png" src="../_images/step.png"/>
+<p class="caption"><span class="caption-text"><a class="reference internal" href="pandas/step.html#pandas-gallery-step"><span class="std std-ref">Step</span></a></span><a class="headerlink" href="#id15" title="Permalink to this image">¶</a></p>
+</div>
+</div><div class="sphx-glr-thumbcontainer example" tooltip="Table"><div class="figure align-default" id="id16">
+<img alt="../_images/table.png" src="../_images/table.png"/>
+<p class="caption"><span class="caption-text"><a class="reference internal" href="pandas/table.html#pandas-gallery-table"><span class="std std-ref">Table</span></a></span><a class="headerlink" href="#id16" title="Permalink to this image">¶</a></p>
+</div>
+</div><div class="sphx-glr-thumbcontainer example" tooltip="Violin"><div class="figure align-default" id="id17">
+<img alt="../_images/violin.png" src="../_images/violin.png"/>
+<p class="caption"><span class="caption-text"><a class="reference internal" href="pandas/violin.html#pandas-gallery-violin"><span class="std std-ref">Violin</span></a></span><a class="headerlink" href="#id17" title="Permalink to this image">¶</a></p>
+</div>
+</div><div style="clear:both"></div></div>
+<div class="section" id="geopandas">
+<h2>Geopandas<a class="headerlink" href="#geopandas" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+</div>
+<div class="sphx-glr-thumbcontainer example" tooltip="Points"><div class="figure align-default" id="id18">
+<img alt="../_images/points.png" src="../_images/points.png"/>
+<p class="caption"><span class="caption-text"><a class="reference internal" href="geopandas/points.html#geopandas-gallery-points"><span class="std std-ref">Points</span></a></span><a class="headerlink" href="#id18" title="Permalink to this image">¶</a></p>
+</div>
+</div><div class="sphx-glr-thumbcontainer example" tooltip="Polygons"><div class="figure align-default" id="id19">
+<img alt="../_images/polygons.png" src="../_images/polygons.png"/>
+<p class="caption"><span class="caption-text"><a class="reference internal" href="geopandas/polygons.html#geopandas-gallery-polygons"><span class="std std-ref">Polygons</span></a></span><a class="headerlink" href="#id19" title="Permalink to this image">¶</a></p>
+</div>
+</div><div style="clear:both"></div></div>
+<div class="section" id="xarray">
+<h2>Xarray<a class="headerlink" href="#xarray" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+</div>
+<div class="sphx-glr-thumbcontainer example" tooltip="Contour"><div class="figure align-default" id="id20">
+<img alt="../_images/contour.png" src="../_images/contour.png"/>
+<p class="caption"><span class="caption-text"><a class="reference internal" href="xarray/contour.html#xarray-gallery-contour"><span class="std std-ref">Contour</span></a></span><a class="headerlink" href="#id20" title="Permalink to this image">¶</a></p>
+</div>
+</div><div class="sphx-glr-thumbcontainer example" tooltip="Contourf"><div class="figure align-default" id="id21">
+<img alt="../_images/contourf.png" src="../_images/contourf.png"/>
+<p class="caption"><span class="caption-text"><a class="reference internal" href="xarray/contourf.html#xarray-gallery-contourf"><span class="std std-ref">Contourf</span></a></span><a class="headerlink" href="#id21" title="Permalink to this image">¶</a></p>
+</div>
+</div><div class="sphx-glr-thumbcontainer example" tooltip="Image"><div class="figure align-default" id="id22">
+<img alt="../_images/image.png" src="../_images/image.png"/>
+<p class="caption"><span class="caption-text"><a class="reference internal" href="xarray/image.html#xarray-gallery-image"><span class="std std-ref">Image</span></a></span><a class="headerlink" href="#id22" title="Permalink to this image">¶</a></p>
+</div>
+</div><div class="sphx-glr-thumbcontainer example" tooltip="Quadmesh"><div class="figure align-default" id="id23">
+<img alt="../_images/quadmesh.png" src="../_images/quadmesh.png"/>
+<p class="caption"><span class="caption-text"><a class="reference internal" href="xarray/quadmesh.html#xarray-gallery-quadmesh"><span class="std std-ref">Quadmesh</span></a></span><a class="headerlink" href="#id23" title="Permalink to this image">¶</a></p>
+</div>
+</div><div class="sphx-glr-thumbcontainer example" tooltip="Rgb"><div class="figure align-default" id="id24">
+<img alt="../_images/rgb.png" src="../_images/rgb.png"/>
+<p class="caption"><span class="caption-text"><a class="reference internal" href="xarray/rgb.html#xarray-gallery-rgb"><span class="std std-ref">Rgb</span></a></span><a class="headerlink" href="#id24" title="Permalink to this image">¶</a></p>
+</div>
+</div><div class="sphx-glr-thumbcontainer example" tooltip="Vectorfield"><div class="figure align-default" id="id25">
+<img alt="../_images/vectorfield.png" src="../_images/vectorfield.png"/>
+<p class="caption"><span class="caption-text"><a class="reference internal" href="xarray/vectorfield.html#xarray-gallery-vectorfield"><span class="std std-ref">Vectorfield</span></a></span><a class="headerlink" href="#id25" title="Permalink to this image">¶</a></p>
+</div>
+</div><div style="clear:both"></div></div>
+</div>
+</div>
+<div class="prev-next-bottom">
+<a class="left-prev" href="../user_guide/Pandas_API.html" id="prev-link" title="previous page">Pandas API</a>
+<a class="right-next" href="pandas/area.html" id="next-link" title="next page">Area</a>
+</div>
+</main>
+</div>
+</div>
+<script src="../_static/js/index.1c5a1a01449ed65a7b51.js"></script>
+<footer class="footer mt-5 mt-md-0">
+<div class="container">
+<div class="footer-item">
+<p class="copyright">
+    © Copyright 2018-2021 HoloViz developers.<br/>
+</p>
+</div>
+<div class="footer-item">
+<p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.5.3.<br/>
+</p>
+</div>
+</div>
+</footer>
+</body>
+</html>

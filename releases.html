@@ -1,0 +1,394 @@
+
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Releases — hvPlot 0.7.2 documentation</title>
+<link href="_static/css/theme.css" rel="stylesheet"/>
+<link href="_static/css/index.c5995385ac14fb8791e8eb36b4908be2.css" rel="stylesheet"/>
+<link href="_static/vendor/fontawesome/5.13.0/css/all.min.css" rel="stylesheet"/>
+<link as="font" crossorigin="" href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2" rel="preload" type="font/woff2"/>
+<link as="font" crossorigin="" href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2" rel="preload" type="font/woff2"/>
+<link href="_static/pygments.css" rel="stylesheet" type="text/css">
+<link href="_static/basic.css" rel="stylesheet" type="text/css">
+<link href="_static/togglebutton.css" rel="stylesheet" type="text/css">
+<link href="_static/mystnb.css" rel="stylesheet" type="text/css"/>
+<link href="_static/graphviz.css" rel="stylesheet" type="text/css"/>
+<link href="_static/nbsite.css" rel="stylesheet" type="text/css"/>
+<link href="_static/custom.css" rel="stylesheet" type="text/css"/>
+<link as="script" href="_static/js/index.1c5a1a01449ed65a7b51.js" rel="preload"/>
+<script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+<script src="_static/jquery.js"></script>
+<script src="_static/underscore.js"></script>
+<script src="_static/doctools.js"></script>
+<script src="_static/togglebutton.js"></script>
+<script>var togglebuttonSelector = '.toggle, .admonition.dropdown, .tag_hide_input div.cell_input, .tag_hide-input div.cell_input, .tag_hide_output div.cell_output, .tag_hide-output div.cell_output, .tag_hide_cell.cell, .tag_hide-cell.cell';</script>
+<link href="_static/favicon.ico" rel="shortcut icon">
+<link href="about.html" rel="author" title="About these documents"/>
+<link href="genindex.html" rel="index" title="Index"/>
+<link href="search.html" rel="search" title="Search"/>
+<link href="about.html" rel="next" title="About"/>
+<link href="developer_guide/testing.html" rel="prev" title="Testing"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<meta content="en" name="docsearch:language"/>
+</link></link></link></link></head>
+<body data-offset="80" data-spy="scroll" data-target="#bd-toc-nav">
+<div class="container-fluid" id="banner"></div>
+<nav class="navbar navbar-dark navbar-expand-lg bg-dark fixed-top bd-navbar" id="navbar-main"><div class="container-xl">
+<div id="navbar-start">
+<a class="navbar-brand" href="index.html">
+<img alt="logo" class="logo" src="_static/logo_horizontal.svg"/>
+</a>
+</div>
+<button aria-controls="navbar-collapsible" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-target="#navbar-collapsible" data-toggle="collapse" type="button">
+<span class="navbar-toggler-icon"></span>
+</button>
+<div class="col-lg-9 collapse navbar-collapse" id="navbar-collapsible">
+<div class="mr-auto" id="navbar-center">
+<div class="navbar-center-item">
+<ul class="navbar-nav" id="navbar-main-elements">
+<li class="toctree-l1 nav-item">
+<a class="reference internal nav-link" href="index.html">
+  Introduction
+ </a>
+</li>
+<li class="toctree-l1 nav-item">
+<a class="reference internal nav-link" href="user_guide/index.html">
+  User Guide
+ </a>
+</li>
+<li class="toctree-l1 nav-item">
+<a class="reference internal nav-link" href="reference/index.html">
+  Reference Gallery
+ </a>
+</li>
+<li class="toctree-l1 nav-item">
+<a class="reference internal nav-link" href="topics.html">
+  Topics
+ </a>
+</li>
+<li class="toctree-l1 nav-item">
+<a class="reference internal nav-link" href="developer_guide/index.html">
+  Developer Guide
+ </a>
+</li>
+<li class="toctree-l1 current active nav-item">
+<a class="current reference internal nav-link" href="#">
+  Releases
+ </a>
+</li>
+<li class="toctree-l1 nav-item">
+<a class="reference internal nav-link" href="about.html">
+  About
+ </a>
+</li>
+</ul>
+</div>
+</div>
+<div id="navbar-end">
+<div class="navbar-end-item">
+<ul aria-label="Icon Links" class="navbar-nav" id="navbar-icon-links">
+<li class="nav-item">
+<a class="nav-link" href="https://github.com/holoviz/hvplot" rel="noopener" target="_blank" title="GitHub">
+<span><i class="fab fa-github-square"></i></span>
+<label class="sr-only">GitHub</label>
+</a>
+</li>
+<li class="nav-item">
+<a class="nav-link" href="https://twitter.com/HoloViews" rel="noopener" target="_blank" title="Twitter">
+<span><i class="fab fa-twitter-square"></i></span>
+<label class="sr-only">Twitter</label>
+</a>
+</li>
+<li class="nav-item">
+<a class="nav-link" href="https://discourse.holoviz.org/" rel="noopener" target="_blank" title="Discourse">
+<span><i class="fab fa-discourse"></i></span>
+<label class="sr-only">Discourse</label>
+</a>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+</nav>
+<div class="container-xl">
+<div class="row">
+<!-- Only show if we have sidebars configured, else just a small margin  -->
+<div class="col-12 col-md-2 bd-sidebar"><form action="search.html" class="bd-search d-flex align-items-center" method="get">
+<i class="icon fas fa-search"></i>
+<input aria-label="Search the docs ..." autocomplete="off" class="form-control" id="search-input" name="q" placeholder="Search the docs ..." type="search"/>
+</form><nav aria-label="Main navigation" class="bd-links" id="bd-docs-nav">
+<div class="bd-toc-item active">
+</div>
+</nav>
+</div>
+<div class="d-none d-xl-block col-xl-2 bd-toc">
+<div class="toc-item">
+<div class="tocsection onthispage pt-5 pb-3">
+<i class="fas fa-list"></i> On this page
+</div>
+<nav id="bd-toc-nav">
+<ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry">
+<a class="reference internal nav-link" href="#version-0-7-2">
+   Version 0.7.2
+  </a>
+</li>
+<li class="toc-h2 nav-item toc-entry">
+<a class="reference internal nav-link" href="#version-0-7-1">
+   Version 0.7.1
+  </a>
+</li>
+<li class="toc-h2 nav-item toc-entry">
+<a class="reference internal nav-link" href="#version-0-7-0">
+   Version 0.7.0
+  </a>
+</li>
+<li class="toc-h2 nav-item toc-entry">
+<a class="reference internal nav-link" href="#version-0-6-0">
+   Version 0.6.0
+  </a>
+</li>
+<li class="toc-h2 nav-item toc-entry">
+<a class="reference internal nav-link" href="#version-0-5-2">
+   Version 0.5.2
+  </a>
+</li>
+<li class="toc-h2 nav-item toc-entry">
+<a class="reference internal nav-link" href="#version-0-5-1">
+   Version 0.5.1
+  </a>
+</li>
+<li class="toc-h2 nav-item toc-entry">
+<a class="reference internal nav-link" href="#version-0-5-0">
+   Version 0.5.0
+  </a>
+</li>
+<li class="toc-h2 nav-item toc-entry">
+<a class="reference internal nav-link" href="#version-0-4-0">
+   Version 0.4.0
+  </a>
+</li>
+<li class="toc-h2 nav-item toc-entry">
+<a class="reference internal nav-link" href="#version-0-3-0">
+   Version 0.3.0
+  </a>
+</li>
+</ul>
+</nav>
+</div>
+<div class="toc-item">
+</div>
+</div>
+<main class="col-12 col-md-10 col-xl-8 py-md-5 pl-md-5 pr-md-4 bd-content" role="main">
+<div>
+<div class="section" id="releases">
+<h1>Releases<a class="headerlink" href="#releases" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="version-0-7-2">
+<h2>Version 0.7.2<a class="headerlink" href="#version-0-7-2" title="Permalink to this headline">¶</a></h2>
+<p>This is  a minor release with a number of bug fixes and enhancements.
+Many thanks to @StefanBrand, @loicduffar, @brl0, @michaelaye,
+@aaronspring, @toddrjen, @raybellwaves, @jlstevens, @jbednar and
+@philippjfr for contributing.</p>
+<p>Features:</p>
+<ul class="simple">
+<li><p>Add support for geographic features (<a class="reference external" href="https://github.com/holoviz/hvplot/pull/622">#622</a>)</p></li>
+<li><p>Added support for OHLC plot (<a class="reference external" href="https://github.com/holoviz/hvplot/pull/623">#623</a>)</p></li>
+</ul>
+<p>Enhancements:</p>
+<ul class="simple">
+<li><p>Support setting options for diagonal plots in <code class="docutils literal notranslate"><span class="pre">scatter_matrix</span></code> (<a class="reference external" href="https://github.com/holoviz/hvplot/pull/602">#602</a>)</p></li>
+<li><p>Take <code class="docutils literal notranslate"><span class="pre">group_label</span></code> from columns if available (<a class="reference external" href="https://github.com/holoviz/hvplot/pull/615">#615</a>)</p></li>
+<li><p>Add kwargs to <code class="docutils literal notranslate"><span class="pre">interactive.layout()</span></code></p></li>
+</ul>
+<p>Bug fixes:</p>
+<ul class="simple">
+<li><p>Fix support for <code class="docutils literal notranslate"><span class="pre">clim</span></code> on <code class="docutils literal notranslate"><span class="pre">contours</span></code> (<a class="reference external" href="https://github.com/holoviz/hvplot/pull/587">#587</a>)</p></li>
+<li><p>Adding default coordinates to datasets with missing coords (<a class="reference external" href="https://github.com/holoviz/hvplot/pull/605">#605</a>)</p></li>
+<li><p>Do not plot <code class="docutils literal notranslate"><span class="pre">streamz</span></code> example point (<a class="reference external" href="https://github.com/holoviz/hvplot/pull/614">#614</a>)</p></li>
+<li><p>Fix passing in multiple z-values (<a class="reference external" href="https://github.com/holoviz/hvplot/pull/616">#616</a>)</p></li>
+<li><p>Ensure <code class="docutils literal notranslate"><span class="pre">violin</span></code> and <code class="docutils literal notranslate"><span class="pre">boxplot</span></code> color is applied (<a class="reference external" href="https://github.com/holoviz/hvplot/pull/">#619</a>)</p></li>
+<li><p>Ensure categorical colormapping is applied during <code class="docutils literal notranslate"><span class="pre">datashade</span></code> (<a class="reference external" href="https://github.com/holoviz/hvplot/pull/621">#621</a>)</p></li>
+</ul>
+<p>Compatibility:</p>
+<ul class="simple">
+<li><p>Switch default tile source to <code class="docutils literal notranslate"><span class="pre">OSM</span></code> (since <code class="docutils literal notranslate"><span class="pre">Wikipedia</span></code> is no longer available) (<a class="reference external" href="https://github.com/holoviz/hvplot/pull/610">#610</a>)</p></li>
+</ul>
+<p>Documentation:</p>
+<ul class="simple">
+<li><p>Correctly document .hist rather than <code class="docutils literal notranslate"><span class="pre">.histogram</span></code> (<a class="reference external" href="https://github.com/holoviz/hvplot/pull/571">#571</a>)</p></li>
+<li><p>Use strings rather than bytes when referring to airplane dataset columns (<a class="reference external" href="https://github.com/holoviz/hvplot/issues/538">#538</a>)</p></li>
+<li><p>Preserve function signature and docstring in <code class="docutils literal notranslate"><span class="pre">with_hv_extension</span></code> (<a class="reference external" href="https://github.com/holoviz/hvplot/pull/601">#601</a>)</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">hover_cols</span></code> example (<a class="reference external" href="https://github.com/holoviz/hvplot/pull/612">#612</a>)</p></li>
+<li><p>Switch to pydata sphinx theme (<a class="reference external" href="https://github.com/holoviz/hvplot/pull/613">#613</a>)</p></li>
+<li><p>Update available options in customization docs (<a class="reference external" href="https://github.com/holoviz/hvplot/pull/620">#620</a>)</p></li>
+</ul>
+</div>
+<div class="section" id="version-0-7-1">
+<h2>Version 0.7.1<a class="headerlink" href="#version-0-7-1" title="Permalink to this headline">¶</a></h2>
+<p>Major new features:</p>
+<ul class="simple">
+<li><p>Add Ibis backend, providing hvPlot features for lazy SQL queries (<a class="reference external" href="https://github.com/holoviz/hvplot/pull/507">#507</a>)</p></li>
+</ul>
+<p>Enhancements:</p>
+<ul class="simple">
+<li><p>Cycles for continuous colormaps ([#548)</p></li>
+<li><p>Validate by column(s) ([#565)</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">hover='vline'</span></code> <code class="docutils literal notranslate"><span class="pre">hover='hline'</span></code> options to expose Bokeh HoverTool mode (<a class="reference external" href="https://github.com/holoviz/hvplot/pull/493">#493</a>)</p></li>
+<li><p>Support streaming plots from HoloViews streams (not needing a streamz source) (<a class="reference external" href="https://github.com/holoviz/hvplot/pull/542">#542</a>)</p></li>
+</ul>
+<p>Bug fixes:</p>
+<ul class="simple">
+<li><p>Drop tuple NetworkX attributes to avoid errors (<a class="reference external" href="https://github.com/holoviz/hvplot/pull/549">#549</a>)</p></li>
+<li><p>Cast types after applying melt to data (<a class="reference external" href="https://github.com/holoviz/hvplot/pull/566">#566</a>)</p></li>
+</ul>
+</div>
+<div class="section" id="version-0-7-0">
+<h2>Version 0.7.0<a class="headerlink" href="#version-0-7-0" title="Permalink to this headline">¶</a></h2>
+<p>Thanks to @philippjfr for managing this release and implementing most
+of the features, and to @jbednar, @ahuang11, and @AurelienSciarra for
+contributions.</p>
+<p>Major new features:</p>
+<ul class="simple">
+<li><p>Powerful new <code class="docutils literal notranslate"><span class="pre">.interactive()</span></code> API for building easy apps (<a class="reference external" href="https://github.com/holoviz/hvplot/pull/505">#505</a>, <a class="reference external" href="https://github.com/holoviz/hvplot/pull/523">#523</a>)</p></li>
+<li><p>New <code class="docutils literal notranslate"><span class="pre">transforms</span></code> argument to transform data in <code class="docutils literal notranslate"><span class="pre">.hvplot()</span></code> calls (<a class="reference external" href="https://github.com/holoviz/hvplot/pull/526">#526</a>)</p></li>
+</ul>
+<p>Other new features and enhancements:</p>
+<ul class="simple">
+<li><p>Support passing geographic projections as strings (<a class="reference external" href="https://github.com/holoviz/hvplot/pull/372">#372</a>)</p></li>
+<li><p>Improved data selection, e.g. for filtering on metadata (<a class="reference external" href="https://github.com/holoviz/hvplot/pull/522">#522</a>)</p></li>
+<li><p>Provide color_key to datashade as well as cmap, for convenience (<a class="reference external" href="https://github.com/holoviz/hvplot/pull/525">#525</a>)</p></li>
+<li><p>Update param warnings to new API (<a class="reference external" href="https://github.com/holoviz/hvplot/pull/528">#528</a>)</p></li>
+<li><p>Replace TravisCI tests with GitHub Actions (<a class="reference external" href="https://github.com/holoviz/hvplot/pull/524">#524</a>)</p></li>
+</ul>
+<p>Bug fixes:</p>
+<ul class="simple">
+<li><p>Fix for specifying <code class="docutils literal notranslate"><span class="pre">hover_cols</span></code> (<a class="reference external" href="https://github.com/holoviz/hvplot/pull/504">#504</a>)</p></li>
+<li><p>Remove outdated reference to <code class="docutils literal notranslate"><span class="pre">__main__</span></code> console script (<a class="reference external" href="https://github.com/holoviz/hvplot/pull/494">#494</a>)</p></li>
+<li><p>Misc doc fixes, including to Streaming.ipynb (<a class="reference external" href="https://github.com/holoviz/hvplot/pull/481">#481</a>, <a class="reference external" href="https://github.com/holoviz/hvplot/pull/511">#511</a>)</p></li>
+<li><p>Handle <code class="docutils literal notranslate"><span class="pre">node_shape</span></code> for networkx (<a class="reference external" href="https://github.com/holoviz/hvplot/pull/527">#527</a>)</p></li>
+</ul>
+</div>
+<div class="section" id="version-0-6-0">
+<h2>Version 0.6.0<a class="headerlink" href="#version-0-6-0" title="Permalink to this headline">¶</a></h2>
+<p>This release includes major contributions from @philippjfr (overall
+maintenance and bugfixes) and @jsignell (reference gallery), plus
+additional contributions from @slamer59 (environment), @anitagraser
+(examples), @itcarroll (color_key alias), @Timothy-W-Hilton (bugfix),
+@jbednar (bugfix), @SandervandenOord (fontscale), and @jordansamuels
+(doc fixes).</p>
+<p>New features:</p>
+<ul class="simple">
+<li><p>Improved <code class="docutils literal notranslate"><span class="pre">save</span></code> and <code class="docutils literal notranslate"><span class="pre">show</span></code> utilities (<a class="reference external" href="https://github.com/holoviz/hvplot/pull/451">#451</a>)</p></li>
+<li><p>Improved compatibility for tab completion (<a class="reference external" href="https://github.com/holoviz/hvplot/pull/411">#411</a>)</p></li>
+<li><p>Major performance enhancement with Datashader in some cases (<a class="reference external" href="https://github.com/holoviz/hvplot/pull/465">#465</a>)</p></li>
+<li><p>Add support for cuDF (<a class="reference external" href="https://github.com/holoviz/hvplot/pull/454">#454</a>, <a class="reference external" href="https://github.com/holoviz/hvplot/pull/466">#466</a>)</p></li>
+<li><p>Support <code class="docutils literal notranslate"><span class="pre">by</span></code> argument for categorical aggregation (<a class="reference external" href="https://github.com/holoviz/hvplot/pull/461">#461</a>)</p></li>
+<li><p>Support <code class="docutils literal notranslate"><span class="pre">color_key</span></code> alias (<a class="reference external" href="https://github.com/holoviz/hvplot/pull/446">#446</a>, <a class="reference external" href="https://github.com/holoviz/hvplot/pull/458">#458</a>)</p></li>
+<li><p>Support <code class="docutils literal notranslate"><span class="pre">spatialpandas</span></code> for large sets of polygons (<a class="reference external" href="https://github.com/holoviz/hvplot/pull/459">#459</a>)</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">fontscale</span></code> keyword (<a class="reference external" href="https://github.com/holoviz/hvplot/pull/397">#397</a>)</p></li>
+</ul>
+<p>Bug fixes and compatibility:</p>
+<ul class="simple">
+<li><p>Fixed <code class="docutils literal notranslate"><span class="pre">'title_format'</span></code> deprecation warning (<a class="reference external" href="https://github.com/holoviz/hvplot/pull/428">#428</a>)</p></li>
+<li><p>Avoid sorting overlays, to make color cycles consistent (<a class="reference external" href="https://github.com/holoviz/hvplot/pull/475">#475</a>)</p></li>
+<li><p>Fix inference of non-declared index coordinates (<a class="reference external" href="https://github.com/holoviz/hvplot/pull/329">#329</a>)</p></li>
+<li><p>Improved handling of indexes on flattened grid (<a class="reference external" href="https://github.com/holoviz/hvplot/pull/452">#452</a>)</p></li>
+<li><p>Preserve <code class="docutils literal notranslate"><span class="pre">Dataset.pipeline</span></code> (<a class="reference external" href="https://github.com/holoviz/hvplot/pull/453">#453</a>)</p></li>
+<li><p>Fixes for option handling (<a class="reference external" href="https://github.com/holoviz/hvplot/pull/458">#458</a>)</p></li>
+</ul>
+<p>Documentation:</p>
+<ul class="simple">
+<li><p>Added (a start to) a reference gallery</p></li>
+<li><p>Added heat and trees example to topics (<a class="reference external" href="https://github.com/holoviz/hvplot/pull/378">#378</a>)</p></li>
+<li><p>Replaced sphinx_pyviz_theme with sphinx_holoviz_theme (<a class="reference external" href="https://github.com/holoviz/hvplot/pull/366">#366</a>)</p></li>
+<li><p>Removed references to pyviz (<a class="reference external" href="https://github.com/holoviz/hvplot/pull/373">#373</a>)</p></li>
+<li><p>Fix networkx documentation (<a class="reference external" href="https://github.com/holoviz/hvplot/pull/476">#476</a>)</p></li>
+</ul>
+</div>
+<div class="section" id="version-0-5-2">
+<h2>Version 0.5.2<a class="headerlink" href="#version-0-5-2" title="Permalink to this headline">¶</a></h2>
+<p>This release mostly includes contributions from @jsignell.</p>
+<ul class="simple">
+<li><p>Allow tile sources to be objects as well as strings (<a class="reference external" href="https://github.com/holoviz/hvplot/pull/345">#345</a>)</p></li>
+<li><p>Set <code class="docutils literal notranslate"><span class="pre">geo=True</span></code> by default for coastline (<a class="reference external" href="https://github.com/holoviz/hvplot/pull/344">#344</a>)</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">check_symmetric_max</span></code> limit for working with large data (<a class="reference external" href="https://github.com/holoviz/hvplot/pull/340">#340</a>)</p></li>
+<li><p>Expose plot at top level, to support <code class="docutils literal notranslate"><span class="pre">pd.options.plotting.backend</span> <span class="pre">=</span> <span class="pre">'hvplot'</span></code> (<a class="reference external" href="https://github.com/holoviz/hvplot/pull/347">#347</a>)</p></li>
+<li><p>Misc bug fixes (<a class="reference external" href="https://github.com/holoviz/hvplot/pull/341">#341</a>, <a class="reference external" href="https://github.com/holoviz/hvplot/pull/343">#343</a>, <a class="reference external" href="https://github.com/holoviz/hvplot/pull/346">#346</a>)</p></li>
+</ul>
+</div>
+<div class="section" id="version-0-5-1">
+<h2>Version 0.5.1<a class="headerlink" href="#version-0-5-1" title="Permalink to this headline">¶</a></h2>
+<p>Minor release with updates to continuous integration setup (from @jsignell).</p>
+</div>
+<div class="section" id="version-0-5-0">
+<h2>Version 0.5.0<a class="headerlink" href="#version-0-5-0" title="Permalink to this headline">¶</a></h2>
+<p>This is a major release that includes bug fixes, changes to default behavior, and enhancements.</p>
+<p>Features:</p>
+<ul class="simple">
+<li><p>Widget handling capabilities to facilitate interactivity (<a class="reference external" href="https://github.com/holoviz/hvplot/pull/323">#323</a>, <a class="reference external" href="https://github.com/holoviz/hvplot/pull/331">#331</a>)</p></li>
+<li><p>New default colormaps (<a class="reference external" href="https://github.com/holoviz/hvplot/pull/258">#258</a>, <a class="reference external" href="https://github.com/holoviz/hvplot/pull/316">#316</a>, <a class="reference external" href="https://github.com/holoviz/hvplot/pull/206">#206</a>)</p></li>
+<li><p>long_name(units) used to label xarray objects (<a class="reference external" href="https://github.com/holoviz/hvplot/pull/173">#173</a>)</p></li>
+<li><p>Derived datetime accessor handlind (<a class="reference external" href="https://github.com/holoviz/hvplot/pull/263">#263</a>, <a class="reference external" href="https://github.com/holoviz/hvplot/pull/286">#286</a>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">coastline</span></code> and <code class="docutils literal notranslate"><span class="pre">tiles</span></code> options for easy geo plots.</p></li>
+<li><p>Automatic date sorting (<a class="reference external" href="https://github.com/holoviz/hvplot/pull/259">#259</a>)</p></li>
+<li><p>Allow use of strings as aggregators for datashader (<a class="reference external" href="https://github.com/holoviz/hvplot/pull/257">#257</a>)</p></li>
+</ul>
+</div>
+<div class="section" id="version-0-4-0">
+<h2>Version 0.4.0<a class="headerlink" href="#version-0-4-0" title="Permalink to this headline">¶</a></h2>
+<p>This is a major release which includes the addition of a networkx
+plotting API and a number of important bug fixes.</p>
+<p>Features:</p>
+<ul class="simple">
+<li><p>A new NetworkX interface providing equivalents for the networkx plotting module (<a class="reference external" href="https://github.com/holoviz/hvplot/pull/152">#152</a>, <a class="reference external" href="https://github.com/holoviz/hvplot/pull/154">#154</a>)</p></li>
+</ul>
+<p>Fixes:</p>
+<ul class="simple">
+<li><p>Fixed handling of labelled property to hide axis labels (<a class="reference external" href="https://github.com/holoviz/hvplot/pull/142">#142</a>)</p></li>
+<li><p>Fixed handling of DataArrays and groupby on RGB plots (<a class="reference external" href="https://github.com/holoviz/hvplot/pull/138">#138</a>, <a class="reference external" href="https://github.com/holoviz/hvplot/pull/141">#141</a>)</p></li>
+<li><p>Allow setting axis position (<a class="reference external" href="https://github.com/holoviz/hvplot/pull/149">#149</a>)</p></li>
+<li><p>Fixes for setting the axis positions (<a class="reference external" href="https://github.com/holoviz/hvplot/pull/145">#145</a>)</p></li>
+</ul>
+</div>
+<div class="section" id="version-0-3-0">
+<h2>Version 0.3.0<a class="headerlink" href="#version-0-3-0" title="Permalink to this headline">¶</a></h2>
+<p>This release includes a number of major improvements to the documentation and core functionality as well as a variety of bug fixes.</p>
+<ul class="simple">
+<li><p>Added improved docstrings including all available options (<a class="reference external" href="https://github.com/pyviz/hvplot/pull/103">#103</a>, <a class="reference external" href="https://github.com/pyviz/hvplot/pull/134">#134</a>)</p></li>
+<li><p>Added support for tab-completion in interactive environments such as IPython and Jupyter notebooks (<a class="reference external" href="https://github.com/pyviz/hvplot/pull/134">#134</a>)</p></li>
+<li><p>Added support for <code class="docutils literal notranslate"><span class="pre">rgb</span></code> (<a class="reference external" href="https://github.com/pyviz/hvplot/pull/137">#137</a>) and <code class="docutils literal notranslate"><span class="pre">labels</span></code> (<a class="reference external" href="https://github.com/pyviz/hvplot/pull/98">#98</a>) plot types</p></li>
+<li><p>Exposed bokeh styling options for all plot types (<a class="reference external" href="https://github.com/pyviz/hvplot/pull/134">#134</a>)</p></li>
+<li><p>Compatibility with latest HoloViews/GeoViews releases (<a class="reference external" href="https://github.com/pyviz/hvplot/pull/113">#113</a>, <a class="reference external" href="https://github.com/pyviz/hvplot/pull/118">#118</a>, <a class="reference external" href="https://github.com/pyviz/hvplot/pull/134">#134</a>)</p></li>
+<li><p>Added control over tools (<a class="reference external" href="https://github.com/pyviz/hvplot/pull/120">#120</a>) and legend position (<a class="reference external" href="https://github.com/pyviz/hvplot/pull/119">#119</a>)</p></li>
+</ul>
+</div>
+</div>
+</div>
+<div class="prev-next-bottom">
+<a class="left-prev" href="developer_guide/testing.html" id="prev-link" title="previous page">Testing</a>
+<a class="right-next" href="about.html" id="next-link" title="next page">About</a>
+</div>
+</main>
+</div>
+</div>
+<script src="_static/js/index.1c5a1a01449ed65a7b51.js"></script>
+<footer class="footer mt-5 mt-md-0">
+<div class="container">
+<div class="footer-item">
+<p class="copyright">
+    © Copyright 2018-2021 HoloViz developers.<br/>
+</p>
+</div>
+<div class="footer-item">
+<p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.5.3.<br/>
+</p>
+</div>
+</div>
+</footer>
+</body>
+</html>
