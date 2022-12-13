@@ -1,10 +1,14 @@
+import pathlib
 import sys
 
 from unittest import TestCase, SkipTest, expectedFailure
 
+from packaging.version import Version
 import numpy as np
 import pandas as pd
 import holoviews as hv
+
+from hvplot.util import proj_to_cartopy
 
 
 class TestGeo(TestCase):
@@ -13,21 +17,26 @@ class TestGeo(TestCase):
         if sys.platform == "win32":
             raise SkipTest("Skip geo tests on windows for now")
         try:
-            import xarray as xr
+            import xarray as xr  # noqa
             import rasterio  # noqa
             import geoviews  # noqa
-            import cartopy.crs as ccrs
+            import cartopy.crs as ccrs  # noqa
+            import rioxarray as rxr
         except:
-            raise SkipTest('xarray, rasterio, geoviews, or cartopy not available')
+            raise SkipTest('xarray, rasterio, geoviews, cartopy, or rioxarray not available')
         import hvplot.xarray  # noqa
         import hvplot.pandas  # noqa
-        self.da = (xr.open_rasterio(
-            'https://github.com/mapbox/rasterio/raw/master/tests/data/RGB.byte.tif')
-            .sel(band=1))
-        self.crs = ccrs.epsg(self.da.crs.split('epsg:')[1])
+        self.da = rxr.open_rasterio(
+           pathlib.Path(__file__).parent / 'data' / 'RGB-red.byte.tif'
+        ).isel(band=0)
+        self.crs = proj_to_cartopy(self.da.spatial_ref.attrs['crs_wkt'])
 
     def assertCRS(self, plot, proj='utm'):
-        assert plot.crs.proj4_params['proj'] == proj
+        import cartopy
+        if Version(cartopy.__version__) < Version('0.20'):
+            assert plot.crs.proj4_params['proj'] == proj
+        else:
+            assert plot.crs.to_dict()['proj'] == proj
 
     def assert_projection(self, plot, proj):
         opts = hv.Store.lookup_options('bokeh', plot, 'plot')
@@ -39,10 +48,13 @@ class TestCRSInference(TestGeo):
     def setUp(self):
         if sys.platform == "win32":
             raise SkipTest("Skip CRS inference on Windows")
-        super(TestCRSInference, self).setUp()
-        
+        super().setUp()
+
     def test_plot_with_crs_as_proj_string(self):
-        plot = self.da.hvplot.image('x', 'y', crs=self.da.crs)
+        da = self.da.copy()
+        da.rio._crs = False  # To not treat it as a rioxarray
+
+        plot = self.da.hvplot.image('x', 'y', crs="epsg:32618")
         self.assertCRS(plot)
 
     def test_plot_with_geo_as_true_crs_undefined(self):
@@ -58,19 +70,24 @@ class TestProjections(TestGeo):
 
     def test_plot_with_crs_as_attr_str(self):
         da = self.da.copy()
+        da.rio._crs = False  # To not treat it as a rioxarray
         da.attrs = {'bar': self.crs}
         plot = da.hvplot.image('x', 'y', crs='bar')
         self.assertCRS(plot)
 
     def test_plot_with_crs_as_nonexistent_attr_str(self):
+        da = self.da.copy()
+        da.rio._crs = False  # To not treat it as a rioxarray
+
         # Used to test crs='foo' but this is parsed under-the-hood
         # by PROJ (projinfo) which matches a geographic projection named
         # 'Amersfoort'
         with self.assertRaisesRegex(ValueError, "'name_of_some_invalid_projection' must be"):
-            self.da.hvplot.image('x', 'y', crs='name_of_some_invalid_projection')
+            da.hvplot.image('x', 'y', crs='name_of_some_invalid_projection')
 
     def test_plot_with_geo_as_true_crs_no_crs_on_data_returns_default(self):
         da = self.da.copy()
+        da.rio._crs = False  # To not treat it as a rioxarray
         da.attrs = {'bar': self.crs}
         plot = da.hvplot.image('x', 'y', geo=True)
         self.assertCRS(plot, 'eqc')
@@ -172,6 +189,13 @@ class TestGeoElements(TestCase):
         points = self.df.hvplot.points('x', 'y', geo=True)
         self.assertEqual(points.crs, self.crs)
 
+    def test_geo_points_color_internally_set_to_dim(self):
+        altered_df = self.df.copy().assign(red=np.random.choice(['a', 'b'], len(self.df)))
+        plot = altered_df.hvplot.points('x', 'y', c='red', geo=True)
+        opts = hv.Store.lookup_options('bokeh', plot, 'style')
+        self.assertIsInstance(opts.kwargs['color'], hv.dim)
+        self.assertEqual(opts.kwargs['color'].dimension.name, 'red')
+
     def test_geo_opts(self):
         points = self.df.hvplot.points('x', 'y', geo=True)
         opts = hv.Store.lookup_options('bokeh', points, 'plot').kwargs
@@ -197,7 +221,13 @@ class TestGeoPandas(TestCase):
             raise SkipTest('geopandas, geoviews, or cartopy not available')
         import hvplot.pandas  # noqa
 
-        self.cities = gpd.read_file(gpd.datasets.get_path('naturalearth_cities'))
+        geometry = gpd.points_from_xy(
+            x=[12.45339, 12.44177, 9.51667, 6.13000, 158.14997],
+            y=[41.90328, 43.93610, 47.13372, 49.61166, 6.91664],
+            crs='EPSG:4326'
+        )
+        names = ['Vatican City', 'San Marino', 'Vaduz', 'Luxembourg', 'Palikir']
+        self.cities = gpd.GeoDataFrame(dict(name=names), geometry=geometry)
 
     def test_points_hover_cols_is_empty_by_default(self):
         points = self.cities.hvplot()

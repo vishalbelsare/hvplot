@@ -22,7 +22,7 @@ def get_setup_version(reponame):
         return version.Version.setup_version(basepath, reponame, archive_commit="$Format:%h$")
     else:
         print("WARNING: param>=1.6.0 unavailable. If you are installing a package, this warning can safely be ignored. If you are creating a package or otherwise operating in a git repository, you should install param>=1.6.0.")
-        return json.load(open(version_file_path, 'r'))['version_string']
+        return json.load(open(version_file_path))['version_string']
 
 
 ########## dependencies ##########
@@ -32,63 +32,77 @@ install_requires = [
     'colorcet >=2',
     'holoviews >=1.11.0',
     'pandas',
-    'numpy>=1.15'
+    'numpy>=1.15',
+    'packaging',
+    'panel >=0.11.0',
 ]
 
 _examples = [
     'geoviews >=1.6.0',
     'numba >=0.51.0',
     'geopandas',
-    'xarray <0.17.0',
-    'networkx',
+    'xarray >=0.18.2',
+    'networkx >=2.6.3',
     'streamz >=0.3.0',
-    'intake',
-    'intake-parquet',
-    'intake-xarray',
-    'dask',
+    'intake >=0.6.5',
+    'intake-parquet >=0.2.3',
+    'intake-xarray >=0.5.0',
+    'dask >=2021.3.0',
     'datashader >=0.6.5',
     'notebook >=5.4',
     'rasterio',
-    's3fs',
-    'scipy',
-    'pillow',
-    'selenium',
-    'spatialpandas',
-    'scikit-image',
-    'python-snappy',
-    'pyepsg'
-]
-
-_examples_extra = _examples + [
+    'cartopy',
+    'pyproj',
+    's3fs >=2022.1.0',
+    'scipy >=1.5.3',
+    'pillow >=8.2.0',
+    'selenium >=3.141.0',
+    'spatialpandas >=0.4.3',
+    'scikit-image >=0.17.2',
+    'python-snappy >=0.6.0',
+    'pooch >=1.6.0',
+    'fiona',
+    'rioxarray',
+    # Extra dependency of cartopy on Python 3.6 only
+    'pyepsg',
+    'matplotlib',
+    'plotly',
     'pygraphviz',
+    'ipykernel <6.18.0'  # temporary
 ]
 
 extras_require = {
     'tests': [
-        'coveralls',
-        'nose',
+        'codecov',
         'flake8',
         'parameterized',
         'pytest',
+        'pytest-cov',
         'nbsmoke >=0.2.0',
-        'twine',   # required for pip packaging
-        'rfc3986', # required by twine
-        'keyring', # required by twine
-        'numpy >=1.7,<1.20' # Numba ABI incompatibility
+        'numpy >=1.7',
+        'matplotlib',
+        'plotly',
+        'xarray',
+        'pooch',
+        'scipy',
+        'ipywidgets',
+        'pre-commit',
     ],
     'examples': _examples,
-    'examples_extra': _examples_extra,
-    'doc': _examples_extra + [
-        'nbsite >=0.5.1',
+    'doc': _examples + [
+        'nbsite >=0.7.2rc2',
+        'pydata-sphinx-theme <0.10',
+        'sphinx-copybutton',
+        'sphinx-design',
     ]
 }
 
 # until pyproject.toml/equivalent is widely supported (setup_requires
 # doesn't work well with pip)
 extras_require['build'] = [
-    'param >=1.6.1',
+    'param >=1.7.0',
     'pyct >=0.4.4',
-    'setuptools' # should make this pip now
+    'setuptools >=30.3.0' # should make this pip now
 ]
 
 extras_require['all'] = sorted(set(sum(extras_require.values(), [])))
@@ -99,7 +113,7 @@ setup_args = dict(
     name='hvplot',
     version=get_setup_version("hvplot"),
     description='A high-level plotting API for the PyData ecosystem built on HoloViews.',
-    long_description=open("README.md").read(),
+    long_description=open("README.md", mode="r", encoding="utf-8").read(),
     long_description_content_type="text/markdown",
     author= "Philipp Rudiger",
     author_email= "developers@pyviz.org",
@@ -113,19 +127,18 @@ setup_args = dict(
     classifiers = [
         "License :: OSI Approved :: BSD License",
         "Development Status :: 5 - Production/Stable",
-        "Programming Language :: Python :: 2",
-        "Programming Language :: Python :: 2.7",
-        "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
         "Operating System :: OS Independent",
         "Intended Audience :: Science/Research",
         "Intended Audience :: Developers",
         "Natural Language :: English",
         "Topic :: Scientific/Engineering",
         "Topic :: Software Development :: Libraries"],
-    python_requires=">=2.7",
+    python_requires=">=3.6",
     install_requires=install_requires,
     extras_require=extras_require,
     tests_require=extras_require['tests'],

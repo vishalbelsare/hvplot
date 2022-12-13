@@ -3,7 +3,7 @@ import numpy as np
 from unittest import SkipTest, expectedFailure
 from parameterized import parameterized
 
-from holoviews import NdOverlay, Store
+from holoviews import NdOverlay, Store, dim, render
 from holoviews.element import Curve, Area, Scatter, Points, Path, HeatMap
 from holoviews.element.comparison import ComparisonTestCase
 
@@ -75,10 +75,27 @@ class TestChart2D(ComparisonTestCase):
         assert plot.vdims == ['temp']
 
 
+    def test_xarray_dataset_with_attrs(self):
+        try:
+            import xarray as xr
+            import hvplot.xarray  # noqa
+        except ImportError:
+            raise SkipTest('xarray not available')
+
+
+        dset = xr.Dataset(
+            {"u": ("t", [1, 3]), "v": ("t", [4, 2])},
+            coords={"t": ("t", [0, 1], {"long_name": "time", "units": "s"})},
+        )
+        ndoverlay = dset.hvplot.line()
+
+        assert render(ndoverlay, "bokeh").xaxis.axis_label == "time (s)"
+
+
 class TestChart2DDask(TestChart2D):
 
     def setUp(self):
-        super(TestChart2DDask, self).setUp()
+        super().setUp()
         try:
             import dask.dataframe as dd
         except:
@@ -101,6 +118,7 @@ class TestChart1D(ComparisonTestCase):
             raise SkipTest('Pandas not available')
         import hvplot.pandas   # noqa
         self.df = pd.DataFrame([[1, 2], [3, 4], [5, 6]], columns=['x', 'y'])
+        self.df_desc = self.df.describe().transpose().sort_values('mean')
         self.dt_df = pd.DataFrame(np.random.rand(90), index=pd.date_range('2019-01-01', '2019-03-31'))
         self.cat_df = pd.DataFrame([[1, 2, 'A'], [3, 4, 'B'], [5, 6, 'C']],
                                    columns=['x', 'y', 'category'])
@@ -121,7 +139,7 @@ class TestChart1D(ComparisonTestCase):
     def test_by_datetime_accessor(self):
         plot = self.dt_df.hvplot.line('index.dt.day', '0', by='index.dt.month')
         obj = NdOverlay({m: Curve((g.index.day, g[0]), 'index.dt.day', '0')
-                         for m, g in self.dt_df.groupby(self.dt_df.index.month)}, 'index.dt.month') 
+                         for m, g in self.dt_df.groupby(self.dt_df.index.month)}, 'index.dt.month')
         self.assertEqual(plot, obj)
 
     @parameterized.expand([('line', Curve), ('area', Area), ('scatter', Scatter)])
@@ -244,6 +262,13 @@ class TestChart1D(ComparisonTestCase):
         opts = Store.lookup_options('bokeh', plot, 'plot')
         self.assertEqual(opts.kwargs['legend_position'], 'left')
 
+    def test_scatter_color_internally_set_to_dim(self):
+        altered_df = self.cat_df.copy().rename(columns={'category': 'red'})
+        plot = altered_df.hvplot.scatter('x', 'y', c='red')
+        opts = Store.lookup_options('bokeh', plot, 'style')
+        self.assertIsInstance(opts.kwargs['color'], dim)
+        self.assertEqual(opts.kwargs['color'].dimension.name, 'red')
+
     @parameterized.expand([('line', Curve), ('area', Area), ('scatter', Scatter)])
     def test_only_includes_num_chart(self, kind, element):
         plot = self.cat_df.hvplot(kind=kind)
@@ -316,11 +341,17 @@ class TestChart1D(ComparisonTestCase):
         assert plot[1].kdims == ['index']
         assert plot[1].vdims == ['y']
 
+    def test_errorbars_no_hover(self):
+        plot = self.df_desc.hvplot.errorbars(y='mean', yerr1='std')
+        assert list(plot.dimensions()) == ['index', 'mean', 'std']
+        bkplot = Store.renderers['bokeh'].get_plot(plot)
+        assert not bkplot.tools
+
 
 class TestChart1DDask(TestChart1D):
 
     def setUp(self):
-        super(TestChart1DDask, self).setUp()
+        super().setUp()
         try:
             import dask.dataframe as dd
         except:

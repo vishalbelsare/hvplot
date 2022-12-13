@@ -1,5 +1,3 @@
-from __future__ import absolute_import
-
 import xarray as xr
 
 from panel.widgets import Widget
@@ -8,6 +6,10 @@ from .interactive import Interactive
 
 
 class XArrayInteractive(Interactive):
+
+    @classmethod
+    def applies(cls, obj):
+        return isinstance(obj, (xr.DataArray, xr.Dataset))
 
     def sel(self, **kwargs):
         processed = {}
@@ -45,6 +47,9 @@ def patch(name='hvplot', interactive='interactive', extension='bokeh', logo=Fals
     except:
         raise ImportError('Could not patch plotting API onto xarray. '
                           'xarray could not be imported.')
+
+    # Remove the class docstring as it very developer focused
+    XArrayInteractive.__doc__ = ""
 
     xr.register_dataset_accessor(name)(hvPlot)
     xr.register_dataarray_accessor(name)(hvPlot)

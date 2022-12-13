@@ -1,26 +1,24 @@
 """
 Provides utilities to convert data and projections
 """
-from __future__ import absolute_import
 
 import sys
 
-from distutils.version import LooseVersion
 from functools import wraps
+from packaging.version import Version
 from types import FunctionType
 
+import numpy as np
 import pandas as pd
-import holoviews as hv
 import param
+import holoviews as hv
 try:
     import panel as pn
     panel_available = True
 except:
     panel_available = False
 
-from holoviews.core.util import basestring
-
-hv_version = LooseVersion(hv.__version__)
+hv_version = Version(hv.__version__)
 
 
 def with_hv_extension(func, extension='bokeh', logo=False):
@@ -28,7 +26,8 @@ def with_hv_extension(func, extension='bokeh', logo=False):
     @wraps(func)
     def wrapper(*args, **kwargs):
         if extension and not getattr(hv.extension, '_loaded', False):
-            hv.extension(extension, logo=logo)
+            from . import hvplot_extension
+            hvplot_extension(extension, logo=logo)
         return func(*args, **kwargs)
     return wrapper
 
@@ -45,11 +44,11 @@ def check_crs(crs):
     """
     Checks if the crs represents a valid grid, projection or ESPG string.
 
-    (Code copied from https://github.com/fmaussion/salem)
+    (Code copied and adapted from https://github.com/fmaussion/salem)
 
     Examples
     --------
-    >>> p = check_crs('+units=m +init=epsg:26915')
+    >>> p = check_crs('epsg:26915 +units=m')
     >>> p.srs
     '+proj=utm +zone=15 +datum=NAD83 +units=m +no_defs'
     >>> p = check_crs('wrong')
@@ -61,19 +60,41 @@ def check_crs(crs):
     A valid crs if possible, otherwise None
     """
     import pyproj
+
+    try:
+        crs_type = pyproj.crs.CRS
+    except AttributeError:
+        class Dummy():
+            pass
+        crs_type = Dummy
+
     if isinstance(crs, pyproj.Proj):
         out = crs
-    elif isinstance(crs, dict) or isinstance(crs, basestring):
+    elif isinstance(crs, crs_type):
+        out = pyproj.Proj(crs.to_wkt(), preserve_units=True)
+    elif isinstance(crs, dict) or isinstance(crs, str):
+        if isinstance(crs, str):
+            # quick fix for https://github.com/pyproj4/pyproj/issues/345
+            crs = crs.replace(' ', '').replace('+', ' +')
         try:
-            out = pyproj.Proj(crs)
+            out = pyproj.Proj(crs, preserve_units=True)
         except RuntimeError:
             try:
-                out = pyproj.Proj(init=crs)
+                out = pyproj.Proj(init=crs, preserve_units=True)
             except RuntimeError:
                 out = None
     else:
         out = None
     return out
+
+
+def proj_is_latlong(proj):
+    """Shortcut function because of deprecation."""
+
+    try:
+        return proj.is_latlong()
+    except AttributeError:
+        return proj.crs.is_geographic
 
 
 def proj_to_cartopy(proj):
@@ -91,6 +112,7 @@ def proj_to_cartopy(proj):
     a cartopy.crs.Projection object
     """
 
+    import cartopy
     import cartopy.crs as ccrs
     try:
         from osgeo import osr
@@ -100,10 +122,7 @@ def proj_to_cartopy(proj):
 
     proj = check_crs(proj)
 
-    if hasattr(proj, 'crs'):
-        if proj.crs.is_geographic:
-            return ccrs.PlateCarree()
-    elif proj.is_latlong():  # pyproj<2.0
+    if proj_is_latlong(proj):
         return ccrs.PlateCarree()
 
     srs = proj.srs
@@ -111,12 +130,16 @@ def proj_to_cartopy(proj):
         # this is more robust, as srs could be anything (espg, etc.)
         s1 = osr.SpatialReference()
         s1.ImportFromProj4(proj.srs)
-        srs = s1.ExportToProj4()
+        if s1.ExportToProj4():
+            srs = s1.ExportToProj4()
 
     km_proj = {'lon_0': 'central_longitude',
                'lat_0': 'central_latitude',
                'x_0': 'false_easting',
                'y_0': 'false_northing',
+               'lat_ts': 'latitude_true_scale',
+               'o_lon_p': 'central_rotated_longitude',
+               'o_lat_p': 'pole_latitude',
                'k': 'scale_factor',
                'zone': 'zone',
                }
@@ -126,9 +149,9 @@ def proj_to_cartopy(proj):
     km_std = {'lat_1': 'lat_1',
               'lat_2': 'lat_2',
               }
-    kw_proj = dict()
-    kw_globe = dict()
-    kw_std = dict()
+    kw_proj = {}
+    kw_globe = {}
+    kw_std = {}
     for s in srs.split('+'):
         s = s.split('=')
         if len(s) != 2:
@@ -142,13 +165,20 @@ def proj_to_cartopy(proj):
         if k == 'proj':
             if v == 'tmerc':
                 cl = ccrs.TransverseMercator
+                kw_proj['approx'] = True
             if v == 'lcc':
                 cl = ccrs.LambertConformal
             if v == 'merc':
                 cl = ccrs.Mercator
             if v == 'utm':
                 cl = ccrs.UTM
+            if v == 'stere':
+                cl = ccrs.Stereographic
+            if v == 'ob_tran':
+                cl = ccrs.RotatedPole
         if k in km_proj:
+            if k == 'zone':
+                v = int(v)
             kw_proj[km_proj[k]] = v
         if k in km_globe:
             kw_globe[km_globe[k]] = v
@@ -157,7 +187,7 @@ def proj_to_cartopy(proj):
 
     globe = None
     if kw_globe:
-        globe = ccrs.Globe(**kw_globe)
+        globe = ccrs.Globe(ellipse='sphere', **kw_globe)
     if kw_std:
         kw_proj['standard_parallels'] = (kw_std['lat_1'], kw_std['lat_2'])
 
@@ -165,6 +195,24 @@ def proj_to_cartopy(proj):
     if cl.__name__ == 'Mercator':
         kw_proj.pop('false_easting', None)
         kw_proj.pop('false_northing', None)
+        if Version(cartopy.__version__) < Version('0.15'):
+            kw_proj.pop('latitude_true_scale', None)
+    elif cl.__name__ == 'Stereographic':
+        kw_proj.pop('scale_factor', None)
+        if 'latitude_true_scale' in kw_proj:
+            kw_proj['true_scale_latitude'] = kw_proj['latitude_true_scale']
+            kw_proj.pop('latitude_true_scale', None)
+    elif cl.__name__ == 'RotatedPole':
+        if 'central_longitude' in kw_proj:
+            kw_proj['pole_longitude'] = kw_proj['central_longitude'] - 180
+            kw_proj.pop('central_longitude', None)
+    else:
+        kw_proj.pop('latitude_true_scale', None)
+
+    try:
+        return cl(globe=globe, **kw_proj)
+    except TypeError:
+        del kw_proj['approx']
 
     return cl(globe=globe, **kw_proj)
 
@@ -182,20 +230,20 @@ def process_crs(crs):
         import cartopy.crs as ccrs
         import geoviews as gv # noqa
         import pyproj
-    except:
-        raise ImportError('Geographic projection support requires GeoViews and cartopy.')
+    except ImportError:
+        raise ImportError('Geographic projection support requires geoviews, pyproj and cartopy.')
 
     if crs is None:
         return ccrs.PlateCarree()
 
-    if isinstance(crs, basestring) and crs.lower().startswith('epsg'):
+    if isinstance(crs, str) and crs.lower().startswith('epsg'):
         try:
             crs = ccrs.epsg(crs[5:].lstrip().rstrip())
         except:
             raise ValueError("Could not parse EPSG code as CRS, must be of the format 'EPSG: {code}.'")
     elif isinstance(crs, int):
         crs = ccrs.epsg(crs)
-    elif isinstance(crs, (basestring, pyproj.Proj)):
+    elif isinstance(crs, (str, pyproj.Proj)):
         try:
             crs = proj_to_cartopy(crs)
         except:
@@ -203,6 +251,21 @@ def process_crs(crs):
     elif not isinstance(crs, ccrs.CRS):
         raise ValueError("Projection must be defined as a EPSG code, proj4 string, cartopy CRS or pyproj.Proj.")
     return crs
+
+
+def is_list_like(obj):
+    """
+    Adapted from pandas' is_list_like cython function.
+    """
+    return (
+        # equiv: `isinstance(obj, abc.Iterable)`
+        hasattr(obj, "__iter__") and not isinstance(obj, type)
+        # we do not count strings/unicode/bytes as list-like
+        and not isinstance(obj, (str, bytes))
+        # exclude zero-dimensional numpy arrays, effectively scalars
+        and not (isinstance(obj, np.ndarray) and obj.ndim == 0)
+    )
+
 
 def is_tabular(data):
     if check_library(data, ['dask', 'streamz', 'pandas', 'geopandas', 'cudf']):
@@ -431,7 +494,7 @@ def process_dynamic_args(x, y, kind, **kwds):
         if isinstance(v, param.Parameter):
             dynamic[k] = v
         elif panel_available and isinstance(v, pn.widgets.Widget):
-            if LooseVersion(pn.__version__) < '0.6.4':
+            if Version(pn.__version__) < Version('0.6.4'):
                 dynamic[k] = v.param.value
             else:
                 dynamic[k] = v
@@ -449,4 +512,32 @@ def filter_opts(eltype, options, backend='bokeh'):
     opts = getattr(hv.Store.options(backend), eltype)
     allowed = [k for g in opts.groups.values()
                for k in list(g.allowed_keywords)]
-    return {k: v for k, v in options.items() if k in allowed}
+    opts = {k: v for k, v in options.items() if k in allowed}
+    return opts
+
+
+def _flatten(line):
+    """
+    Flatten an arbitrarily nested sequence.
+
+    Inspired by: pd.core.common.flatten
+
+    Parameters
+    ----------
+    line : sequence
+        The sequence to flatten
+
+    Notes
+    -----
+    This only flattens list, tuple, and dict sequences.
+
+    Returns
+    -------
+    flattened : generator
+    """
+
+    for element in line:
+        if any(isinstance(element, tp) for tp in (list, tuple, dict)):
+            yield from _flatten(element)
+        else:
+            yield element

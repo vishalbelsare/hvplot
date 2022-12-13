@@ -45,6 +45,7 @@ nosetests.xml
 coverage.xml
 *.cover
 .hypothesis/
+.pytest_cache
 
 # Translations
 *.mo
@@ -108,6 +109,8 @@ doc/**/*.ipynb
 doc/**/*.json
 # this dir contains the whole website and should not be checked in on master
 builtdocs/
+# mystnb
+jupyter_execute/
 
 # pip
 pip-wheel-metadata/
@@ -117,3 +120,12 @@ hvplot/.version
 
 # doit
 .doit.db
+
+# IDE
+/.vscode
+
+# MacOS
+.DS_Store
+
+# Examples artefacts
+examples/user_guide/plot.html

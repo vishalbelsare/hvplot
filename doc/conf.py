@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import param
 
 param.parameterized.docstring_signature = False
@@ -6,25 +5,32 @@ param.parameterized.docstring_describe_params = False
 
 from nbsite.shared_conf import *
 
-project = u'hvPlot'
-authors = u'HoloViz developers'
-copyright = u'2018-2021 ' + authors
+project = 'hvPlot'
+authors = 'HoloViz developers'
+copyright_years['start_year'] = '2016'
+copyright = copyright_fmt.format(**copyright_years)
 description = 'A high-level plotting API for the PyData ecosystem built on HoloViews'
 
 import hvplot
-version = release = hvplot.__version__
-
+version = release  = base_version(hvplot.__version__)
 nbbuild_cell_timeout = 600
 
 html_static_path += ['_static']
-templates_path = ['_templates']
+templates_path += ['_templates']
 
 html_css_files = [
     'nbsite.css',
     'custom.css'
 ]
 
-html_theme_options = {
+# Use require.js vendored by nbsite to display the Plotly figure
+# add the end of the Plotting_Extensions notebook. require.js is normally
+# loaded automatically by nbconvert but that happens not to be the case
+# when a notebook converted via nbsite. Other HoloViews-Plotly plots
+# are rendered via Panel, in a way that doesn't require require.js.
+html_js_files = ['require.js']
+
+html_theme_options.update({
     "github_url": "https://github.com/holoviz/hvplot",
     "icon_links": [
         {
@@ -34,18 +40,24 @@ html_theme_options = {
         },
         {
             "name": "Discourse",
-            "url": "https://discourse.holoviz.org/",
+            "url": "https://discourse.holoviz.org/c/hvplot",
             "icon": "fab fa-discourse",
         },
-    ]
-}
+    ],
+    "google_analytics_id": "UA-154795830-5",
+    "navbar_end": ["navbar-icon-links"],
+})
 
 html_theme = "pydata_sphinx_theme"
 html_logo = "_static/logo_horizontal.svg"
 html_favicon = "_static/favicon.ico"
 
-extensions += ['sphinx.ext.napoleon', 'nbsite.gallery']
-napoleon_numpy_docstring = True
+extensions += [
+    'nbsite.gallery',
+    'sphinx_copybutton',
+]
+
+myst_enable_extensions = ["colon_fence"]
 
 nbsite_gallery_conf = {
     'github_org': 'holoviz',
@@ -66,7 +78,8 @@ nbsite_gallery_conf = {
 }
 
 html_context.update({
+    "last_release": f"v{release}",
     "github_user": "holoviz",
     "github_repo": "panel",
-    "google_analytics_id": "UA-154795830-5",
+    "default_mode": "light",
 })

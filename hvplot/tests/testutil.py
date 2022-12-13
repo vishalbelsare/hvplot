@@ -4,10 +4,12 @@ Tests  utilities to convert data and projections
 import sys
 
 import numpy as np
+import pandas as pd
+import pytest
 
 from unittest import TestCase, SkipTest
 
-from hvplot.util import process_xarray  # noqa
+from hvplot.util import check_crs, is_list_like, process_xarray
 
 
 class TestProcessXarray(TestCase):
@@ -266,3 +268,23 @@ class TestDynamicArgs(TestCase):
         assert dynamic == {}
         assert arg_names == ['c', 'c']
         assert len(arg_deps) == 2
+
+
+def test_check_crs():
+    pytest.importorskip("pyproj")
+    p = check_crs('epsg:26915 +units=m')
+    assert p.srs == '+proj=utm +zone=15 +datum=NAD83 +units=m +no_defs'
+    p = check_crs('wrong')
+    assert p is None
+
+
+def test_is_list_like():
+    assert not is_list_like(0)
+    assert not is_list_like('string')
+    assert not is_list_like(np.array('a'))
+    assert is_list_like(['a', 'b'])
+    assert is_list_like(('a', 'b'))
+    assert is_list_like({'a', 'b'})
+    assert is_list_like(pd.Series(['a', 'b']))
+    assert is_list_like(pd.Index(['a', 'b']))
+    assert is_list_like(np.array(['a', 'b']))
